@@ -49,6 +49,8 @@ public class Game {
                         +nbTours
                         + " tours");
      }
+
+    // Demande au joueur de répondre à la question et applique les effets en fonction de sa réponse
     private void reponseQuestion(Question question){
         question.afficheQuestion2();
        
@@ -83,7 +85,7 @@ public class Game {
     }
 
 
-
+ // Initialise le personnage
     private void initPersonnage(){
         Scanner scanner = new Scanner(System.in);
         System.out.println("Entrez le nom du personnage: ");
@@ -170,6 +172,7 @@ public class Game {
         return question5;
     }
 
+      // Initialise la banque de questions  
     private void initBanqueQuestions2(){
         this.questions = new ArrayList<>();
         Question q1 = initq12();
