@@ -6,6 +6,7 @@ public enum Genre {
 
     REINE;
 
+
     public String longRegne(){
         if(this==ROI)
             return "Long règne au roi ";
