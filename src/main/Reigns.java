@@ -1,143 +1,197 @@
 package main;
 
-import java.util.ArrayList;
-import java.util.Scanner;
+import java.util.Map;
+import java.util.TreeMap;
+import java.util.Vector;
 
+/**
+ * La classe Question représente une question avec ses effets sur les jauges d'un personnage
+ *
+ * @author Julie Jacques / Lucien Mousin
+ * @version 1.0
+ */
+public class Question {
+    /**
+     * nom du personnage associé à la question
+     */
+    protected String nomPersonnage;
+    /**
+     * la question
+     */
+    protected String question;
+    /**
+     * l'effet de la réponse de gauche
+     */
+    protected String effetGauche;
+    /**
+     * l'effet de la réponse de droite
+     */
+    protected String effetDroite;
+    /**
+     * les effets sur les jauges pour la réponse de gauche
+     */
+    protected Vector<Effect> effects;
+    protected Map<TypeJauge, Integer> effetJaugeGauche;
 
-public class Reigns {
+    protected Map<TypeJauge, Integer> effetJaugeDroite;
 
-    private static Personnage personnage;
-
-
-    private static ArrayList<Question> questions;
-
-
-    public static void main(String[] args){
-
-        // début du jeu
-        System.out.println("Bienvenue sur Reigns");
-
-        initBanqueQuestions();
-
-        System.out.println("Création du personnage...");
-
-        initPersonnage();
-        System.out.println(personnage.getGenre().longRegne()
-                +" "+personnage.getNom());
-
-        personnage.AfficheJauges();
-
-        // tirage des questions
-        int nbTours = 0;
-        while(!personnage.finDuJeu()){
-            nbTours++;
-            Question question = getQuestionAleatoire();
-            reponseQuestion(question);
-            personnage.AfficheJauges();
-        }
-
-        // fin du jeu
-        System.out.println(
-                personnage.getNom()
-                        + " a perdu ! Son règne a duré "
-                        +nbTours
-                        + " tours");
-
+    public Question(String nomPersonnage,
+                    String question,
+                    String effetGauche,
+                    String effetDroite) {
+        this.nomPersonnage = nomPersonnage;
+        this.question = question;
+        this.effetGauche = effetGauche;
+        this.effetDroite = effetDroite;
+        this.effects = new Vector<Effect>();
+        this.effetJaugeDroite = new TreeMap<>();
+        this.effetJaugeGauche = new TreeMap<>();
     }
 
-
-    private static void reponseQuestion(Question question){
-        question.afficheQuestion();
-        // récupère la réponse
-        Scanner scanner = new Scanner(System.in);
-        String reponse = "";
-        while(!reponse.equals("G") && !reponse.equals("D")){
-            System.out.println("Entrez la réponse (G ou D)");
-            System.out.flush();
-            reponse = scanner.nextLine();
-        }
-        // applique les malus
-        if(reponse.equals("G")){
-            question.appliqueEffetsGauche(personnage);
-        }else{
-            question.appliqueEffetsDroite(personnage);
-        }
-    }
-
-
-    private static void initPersonnage(){
-        Scanner scanner = new Scanner(System.in);
-        System.out.println("Entrez le nom du personnage: ");
+    public void afficheQuestion() {
+        String result = "["+nomPersonnage+"] "
+                + question
+                + "[G: "+effetGauche
+                + ",D: "+effetDroite
+                + "]";
+        System.out.println(result);
+        System.out.println("Effet G:"+afficheEffets(effetJaugeGauche));
+        System.out.println("Effet D:"+afficheEffets(effetJaugeDroite));
         System.out.flush();
-        String nom = scanner.nextLine();
-        System.out.println(
-                "Faut-il vous appeler Roi ou Reine ? (1 pour Roi, 2 pour Reine)");
-        int genre = scanner.nextInt();
-        Genre roiReine;
-        if(genre==1){
-            roiReine = Genre.ROI;
-        }else{
-            roiReine = Genre.REINE;
+    }
+    public void afficheQuestion2() {
+        String result = "["+nomPersonnage+"] "
+                + question
+                + "[G: "+effetGauche
+                + ",D: "+effetDroite
+                + "]";
+        System.out.println(result);
+        this.afficheEffets2();
+        System.out.flush();
+    }
+
+
+    public void afficheEffets2(){
+        for(TypeEffect typeEffect : TypeEffect.values()){
+            StringBuilder result = new StringBuilder();
+            result.append("Effet ").append(typeEffect).append(":");
+            for(Effect effet : this.effects){
+                if(effet.typeEffect == typeEffect){
+                    result.append(effet.toString());
+                }
+            }
+            System.out.println(result);
         }
 
-        Reigns.personnage = new Personnage(nom,roiReine);
+    }
+    public void appliquerEffet2(TypeEffect typeEffect, Personnage personnage){
+        for(Effect effet : this.effects){
+            if(effet.typeEffect == typeEffect){
+                effet.appilquer(personnage);
+            }
+        }
+    }
+    public void ajoutEffets2(TypeEffect typeEffect, TypeJauge nomJauge, int valeur){
+        effects.add(new Effect(typeEffect, nomJauge, valeur));
+    }
+    private String afficheEffets(Map<TypeJauge, Integer> effets) {
+        StringBuilder result = new StringBuilder();
+        for (Map.Entry<TypeJauge, Integer> effet : effets.entrySet()) {
+            result.append("; jauge ").append(effet.getKey()).append(":");
+            if (effet.getValue() > 0) {
+                result.append("+");
+            }
+            result.append(effet.getValue());
+        }
+        return result.toString();
     }
 
 
-    private static void initBanqueQuestions(){
-        questions = new ArrayList<>();
-        Question question1 = new Question(
-                "Main du roi",
-                "Le peuple souhaite libérer les prisonniers",
-                "Oui",
-                "Non");
-        question1.ajouteEffetGauche(TypeJauge.ARMEE, -5);
-        question1.ajouteEffetGauche(TypeJauge.PEUPLE, +5);
-        question1.ajouteEffetDroite(TypeJauge.PEUPLE, -7);
-        questions.add(question1);
-        Question question2 = new Question(
-                "Paysan",
-                "Il n'y a plus rien à manger",
-                "Importer de la nourriture",
-                "Ne rien faire");
-        question2.ajouteEffetGauche(TypeJauge.FINANCE,-5);
-        question2.ajouteEffetGauche(TypeJauge.PEUPLE, +5);
-        question2.ajouteEffetDroite(TypeJauge.PEUPLE, -5);
-        questions.add(question2);
-        Question question3 = new Question(
-                "Prêtre",
-                "Les dieux sont en colère",
-                "Faire un sacrifice",
-                "Ne rien faire");
-        question3.ajouteEffetGauche(TypeJauge.CLERGE, +5);
-        question3.ajouteEffetGauche(TypeJauge.PEUPLE, -3);
-        question3.ajouteEffetDroite(TypeJauge.CLERGE, -5);
-        questions.add(question3);
-        Question question4 = new Question(
-                "Main du roi",
-                "Le roi Baratheon rassemble son armée",
-                "Le soutenir",
-                "Rester neutre");
-        question4.ajouteEffetGauche(TypeJauge.ARMEE, +3);
-        question4.ajouteEffetGauche(TypeJauge.FINANCE, -3);
-        question4.ajouteEffetGauche(TypeJauge.CLERGE, -3);
-        question4.ajouteEffetDroite(TypeJauge.PEUPLE, +3);
-        questions.add(question4);
-        Question question5 = new Question(
-                "Paysan",
-                "Abondance de récoltes cette année",
-                "Taxer énormément",
-                "Taxer un tout petit peu");
-        question5.ajouteEffetGauche(TypeJauge.FINANCE, +10);
-        question5.ajouteEffetGauche(TypeJauge.PEUPLE, -5);
-        question5.ajouteEffetDroite(TypeJauge.FINANCE, +1);
-        question5.ajouteEffetDroite(TypeJauge.PEUPLE, -3);
-        questions.add(question5);
+    public void appliqueEffetsGauche(Personnage personnage){
+        this.appliqueEffets(effetJaugeGauche, personnage);
     }
 
 
-    private static Question getQuestionAleatoire(){
-        int numQuestion = (int) (Math.random()*questions.size());
-        return questions.get(numQuestion);
+    public void appliqueEffetsDroite(Personnage personnage){
+        this.appliqueEffets(effetJaugeDroite, personnage);
+    }
+
+    private void appliqueEffetArmee(Personnage personnage, int valeur,TypeJauge key){
+        if(key.equals(TypeJauge.ARMEE))
+        personnage.getJaugeArmee().setValeur(personnage.getJaugeArmee().getValeur() + valeur);
+    }
+
+    private void appliqueEffetClerge(Personnage personnage, int valeur,TypeJauge key){
+        if(key.equals(TypeJauge.CLERGE))
+        personnage.getJaugeClerge().setValeur(personnage.getJaugeClerge().getValeur() + valeur);
+    }
+
+    private void appliqueEffetFinance(Personnage personnage, int valeur,TypeJauge key){
+        if(key.equals(TypeJauge.FINANCE))
+        personnage.getJaugeFinance().setValeur(personnage.getJaugeFinance().getValeur() + valeur);
+    }
+
+    private void appliqueEffetPeuple(Personnage personnage, int valeur,TypeJauge key){
+        if(key.equals(TypeJauge.PEUPLE))
+        personnage.getJaugePeuple().setValeur(personnage.getJaugePeuple().getValeur() + valeur);
+    }
+    private void appliqueEffets(Map<TypeJauge,Integer> effets, Personnage personnage){
+        for(Map.Entry<TypeJauge,Integer> effet : effets.entrySet()){
+                appliqueEffetArmee(personnage, effet.getValue(),effet.getKey());
+                appliqueEffetClerge(personnage, effet.getValue(),effet.getKey());
+                appliqueEffetFinance(personnage, effet.getValue(),effet.getKey());
+                appliqueEffetPeuple(personnage, effet.getValue(),effet.getKey());
+        }
+    }
+
+    public void ajouteEffetGauche(TypeJauge jauge,
+                                  int valeur){
+        effetJaugeGauche.put(jauge,valeur);
+    }
+
+
+    public void ajouteEffetDroite(TypeJauge jauge,
+                                  int valeur){
+        effetJaugeDroite.put(jauge,valeur);
+    }
+
+
+    public String getNomPersonnage() {
+        return nomPersonnage;
+    }
+
+
+    public void setNomPersonnage(String nomPersonnage) {
+        this.nomPersonnage = nomPersonnage;
+    }
+
+
+    public String getQuestion() {
+        return question;
+    }
+
+
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
+    
+    public String getEffetGauche() {
+        return effetGauche;
+    }
+
+
+    public void setEffetGauche(String effetGauche) {
+        this.effetGauche = effetGauche;
+    }
+
+
+    public String getEffetDroite() {
+        return effetDroite;
+    }
+
+
+    public void setEffetDroite(String effetDroite) {
+        this.effetDroite = effetDroite;
     }
 }
