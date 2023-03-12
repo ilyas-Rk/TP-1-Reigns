@@ -10,12 +10,16 @@ import java.util.Vector;
 
 public class Question {
 
+    // Le nom du personnage associé à la question
     protected String nomPersonnage;
 
+    // L'effet de la réponse de gauche 
     protected String question;
 
+    // L'effet de la réponse de droite
     protected String effetGauche;
 
+    // les effets sur les jauges pour la réponse de droite
     protected String effetDroite;
 
     protected Vector<Effect> effects;
@@ -36,6 +40,8 @@ public class Question {
         this.effetJaugeGauche = new TreeMap<>();
     }
 
+
+    // Affiche la question avec les effets associés aux choix gauche et droit.
     public void afficheQuestion() {
         String result = "["+nomPersonnage+"] "
                 + question

@@ -11,13 +11,13 @@ public class Game {
     private Personnage personnage;
 
     /**
-     * la banque des questions
+     * Les questions
      */
     private ArrayList<Question> questions;
     public Game(){
 
 
-        // début du jeu
+        // Le début du jeu
         System.out.println("Bienvenue sur Reigns");
 
         initBanqueQuestions2();
@@ -32,7 +32,7 @@ public class Game {
         personnage.AfficheJauges();
 
 
-        // tirages des questions
+        // Le tirages des questions
         int nbTours = 0;
         while(!this.finDuJeu()){
             nbTours++;
@@ -42,7 +42,7 @@ public class Game {
         }
 
 
-        // fin du jeu
+        // La fin du jeu
         System.out.println(
                 personnage.getNom()
                         + " a perdu ! Son règne a duré "

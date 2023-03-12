@@ -5,12 +5,13 @@
 package main;
 
 public class Jauge {
-
+ // Le type de la jauge
     protected TypeJauge type;
-
+ // Le nom de la jauge
     protected String nom;
-
+//  La valeur de la jauge
     protected int valeur;
+
 
 
     public Jauge(TypeJauge type,String nom, int valeur){
@@ -34,16 +35,17 @@ public class Jauge {
         System.out.println(resultat);
     }
 
+    // Retourne le nom de la jauge
     public String getNom() {
         return nom;
     }
 
-
+    // Modifier le nom de la jauge
     public void setNom(String nom) {
         this.nom = nom;
     }
 
-
+    // Retourne la valeur de la jauge
     public int getValeur() {
         return valeur;
     }
@@ -53,11 +55,12 @@ public class Jauge {
         this.valeur = valeur;
     }
 
-
+    // Retourne le type de la jauge
     public TypeJauge getType() {
         return type;
     }
-
+    
+    //Modifie le type de la jauge.
     public void setType(TypeJauge type) {
         this.type = type;
     }

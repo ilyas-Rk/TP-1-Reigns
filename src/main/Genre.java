@@ -5,9 +5,10 @@
 package main;
 
 public enum Genre {
-
+ /*** Genre masculin*/
     ROI,
 
+/*** Genre féminin */
     REINE;
 
 
