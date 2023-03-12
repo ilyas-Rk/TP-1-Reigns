@@ -7,10 +7,12 @@ public class Game {
     private Personnage personnage;
 
     /**
-     * la banque de questions
+     * la banque des questions
      */
     private ArrayList<Question> questions;
     public Game(){
+
+
         // début du jeu
         System.out.println("Bienvenue sur Reigns");
 
@@ -25,7 +27,8 @@ public class Game {
 
         personnage.AfficheJauges();
 
-        // tirage des questions
+
+        // tirages des questions
         int nbTours = 0;
         while(!this.finDuJeu()){
             nbTours++;
@@ -33,6 +36,7 @@ public class Game {
             reponseQuestion2(question);
             personnage.AfficheJauges();
         }
+
 
         // fin du jeu
         System.out.println(
@@ -43,7 +47,8 @@ public class Game {
      }
     private void reponseQuestion(Question question){
         question.afficheQuestion2();
-        // récupère la réponse
+       
+        // récupèrer la réponse
         Scanner scanner = new Scanner(System.in);
         String reponse = "";
         while(!reponse.equals("G") && !reponse.equals("D")){
@@ -51,6 +56,7 @@ public class Game {
             System.out.flush();
             reponse = scanner.nextLine();
         }
+
         // applique les malus
         if(reponse.equals("G")){
             question.appliqueEffetsGauche(this.personnage);
@@ -73,10 +79,6 @@ public class Game {
     }
 
 
-    /**
-     * Cette fonction permet d'initialiser le personnage joué. Elle demande à l'utilisateur de saisir le nom du personnage
-     * et le genre (Roi ou Reine). Elle crée ensuite le personnage.
-     */
 
     private void initPersonnage(){
         Scanner scanner = new Scanner(System.in);
@@ -163,9 +165,7 @@ public class Game {
         question5.ajouteEffetDroite(TypeJauge.PEUPLE, -3);
         return question5;
     }
-    /**
-     * Cette fonction initialise la banque de questions. Elle crée les questions et les ajoute à la banque.
-     */
+
     private void initBanqueQuestions2(){
         this.questions = new ArrayList<>();
         Question q1 = initq12();
@@ -185,10 +185,7 @@ public class Game {
         this.questions.add(q5);
     }
 
-    /**
-     * Cette fonction permet de tirer une question aléatoire dans la banque de questions.
-     * @return Une question aléatoire
-     */
+
     private Question getQuestionAleatoire(){
         int numQuestion = (int) (Math.random()*this.questions.size());
         return this.questions.get(numQuestion);
